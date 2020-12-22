@@ -69,9 +69,9 @@ private_docker_aws_images:
 # These files are retrieved from a Docker registry.
 # Currently these files can go anywhere.
 private_docker_registry_images:
-  - image: helloworld:latest
-    tag: universe/helloworld:latest
-    destination_file: helloworld.tar.gz
+  - image: iotechsys/eb-salt-minion
+    tag: 3000.3
+    destination_file: docker-minion.tar.gz
     docker_registry: hub.docker.site.com
-    docker_username: registryuser
-    docker_password: asdfasdfasfasfasdfasf
+    docker_username: andrewross396
+    docker_password: Muse@MCFC2013
