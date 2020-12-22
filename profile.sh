@@ -8,17 +8,15 @@ set -a
 #this is provided while using Utility OS
 source /opt/bootstrap/functions
 
-
-
 # --- Add Packages
 ubuntu_bundles="openssh-server"
 ubuntu_packages="wget"
 
 # --- List out any docker images you want pre-installed separated by spaces. ---
-pull_sysdockerimagelist=""
+pull_sysdockerimagelist="http://${PROVISIONER}${param_httppath}/files/docker-minion.tar"
 
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
-wget_sysdockerimagelist="" 
+wget_sysdockerimagelist=""
 
 
 
