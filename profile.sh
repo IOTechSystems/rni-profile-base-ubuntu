@@ -18,8 +18,6 @@ pull_sysdockerimagelist="http://${PROVISIONER}${param_httppath}/files/docker-min
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
 
-
-
 # --- Install Extra Packages ---
 run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
     "docker run -i --rm --privileged --name ubuntu-installer ${DOCKER_PROXY_ENV} -v /dev:/dev -v /sys/:/sys/ -v $ROOTFS:/target/root ubuntu:${param_ubuntuversion} sh -c \
@@ -34,10 +32,18 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         apt install -y ${ubuntu_packages}\"'" \
     ${PROVISION_LOG}
 
-# --- Pull any and load any system images ---
-for image in $pull_sysdockerimagelist; do
-	run "Installing system-docker image $image" "docker exec -i system-docker docker pull $image" "$TMP/provisioning.log"
-done
-for image in $wget_sysdockerimagelist; do
-	run "Installing system-docker image $image" "wget -O- $image 2>> $TMP/provisioning.log | docker exec -i system-docker docker load" "$TMP/provisioning.log"
-done
+# --- Get kernel parameters ---
+kernel_params=$(cat /proc/cmdline)
+
+if [[ $kernel_params == *"token="* ]]; then
+    tmp="${kernel_params##*token=}"
+    export param_token="${tmp%% *}"
+fi
+
+if [[ $kernel_params == *"bootstrap="* ]]; then
+    tmp="${kernel_params##*bootstrap=}"
+    export param_bootstrap="${tmp%% *}"
+    export param_bootstrapurl=$(echo $param_bootstrap | sed "s#/$(basename $param_bootstrap)\$##g")
+fi
+
+wget --header "Authorization: token ${param_token}" -O - ${param_bootstrapurl}/profile.sh

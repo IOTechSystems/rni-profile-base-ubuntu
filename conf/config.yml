@@ -3,5 +3,5 @@
 # Copyright (C) 2019 Intel Corporation
 # SPDX-License-Identifier: BSD-3-Clause
 
-kernel_arguments: diskencrypt=false release=dev ubuntuversion=bionic arch=amd64 username=iotech password=tcuser
+kernel_arguments: diskencrypt=false release=dev ubuntuversion=bionic arch=amd64 username=iotech password=tcuser token=63dba359187da29a8ac128fa86e0c7b014912b30
 
