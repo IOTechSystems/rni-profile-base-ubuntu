@@ -73,5 +73,5 @@ private_docker_registry_images:
     tag: 3000.3
     destination_file: docker-minion.tar.gz
     docker_registry: hub.docker.site.com
-    docker_username: andrewross396
-    docker_password: Muse@MCFC2013
+    docker_username: ""
+    docker_password: ""
