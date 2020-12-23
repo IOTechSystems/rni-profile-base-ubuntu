@@ -5,13 +5,3 @@
 
 kernel_arguments: diskencrypt=false release=dev ubuntuversion=bionic arch=amd64 username=iotech password=tcuser
 
-# These files are retrieved from a Docker registry.
-# Currently these files can go anywhere.
-private_docker_registry_images:
-  - image: iotechsys/eb-salt-minion
-    tag: 3000.3
-    destination_file: /files/docker-minion.tar
-    docker_registry: hub.docker.com
-    docker_username: andrewross396
-    docker_password: Muse@MCFC2013
-
