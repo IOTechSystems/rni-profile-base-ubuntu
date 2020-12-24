@@ -12,9 +12,6 @@ source /opt/bootstrap/functions
 ubuntu_bundles="openssh-server"
 ubuntu_packages="wget"
 
-# --- List out any docker images you want pre-installed separated by spaces. ---
-pull_sysdockerimagelist="http://${PROVISIONER}${param_httppath}/files/docker-minion.tar"
-
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
 
@@ -32,18 +29,4 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         apt install -y ${ubuntu_packages}\"'" \
     ${PROVISION_LOG}
 
-# --- Get kernel parameters ---
-kernel_params=$(cat /proc/cmdline)
-
-if [[ $kernel_params == *"token="* ]]; then
-    tmp="${kernel_params##*token=}"
-    export param_token="${tmp%% *}"
-fi
-
-if [[ $kernel_params == *"bootstrap="* ]]; then
-    tmp="${kernel_params##*bootstrap=}"
-    export param_bootstrap="${tmp%% *}"
-    export param_bootstrapurl=$(echo $param_bootstrap | sed "s#/$(basename $param_bootstrap)\$##g")
-fi
-
-wget --header "Authorization: token ${param_token}" -O - ${param_bootstrapurl}/profile.sh
+run "test dir" "mkdir -p /test-dir"
