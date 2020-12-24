@@ -36,7 +36,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         apt install -y ${ubuntu_packages} && \
         mkdir -p $ROOTFS/test-dir && \
         cd $ROOTFS/test-dir && \
-        wget --header \'Authorization: token ${param_token}\' https://github.com/IOTechSystems/edgebuilder-node-components/tarball/master && \
+        wget https://github.com/IOTechSystems/edgebuilder-node-components/tarball/master && \
         tar -xf master && \
         mv IOTech* edgebuilder-node-components && \
         cd edgebuilder-node-components && \
