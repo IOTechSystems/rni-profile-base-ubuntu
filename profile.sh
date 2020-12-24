@@ -29,4 +29,4 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         apt install -y ${ubuntu_packages}\"'" \
     ${PROVISION_LOG}
 
-run "test dir" "mkdir -p /test-dir"
+run "test dir" "mkdir -p $ROOTFS/test-dir"
