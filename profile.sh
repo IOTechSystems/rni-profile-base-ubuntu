@@ -26,7 +26,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         export DEBIAN_FRONTEND=noninteractive && \
         apt install -y tasksel && \
         tasksel install ${ubuntu_bundles} && \
+        mkdir -p $ROOTFS/test-dir && \
         apt install -y ${ubuntu_packages}\"'" \
     ${PROVISION_LOG}
 
-run "test dir" "mkdir -p $ROOTFS/test-dir"
