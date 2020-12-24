@@ -32,15 +32,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
     LANG=C.UTF-8 chroot /target/root sh -c \
         \"$(echo ${INLINE_PROXY} | sed "s#'#\\\\\"#g") export TERM=xterm-color && \
         export DEBIAN_FRONTEND=noninteractive && \
-        apt install -y tasksel && \
         tasksel install ${ubuntu_bundles} && \
         apt install -y ${ubuntu_packages} && \
-        mkdir -p $ROOTFS/test-dir && \
-        cd $ROOTFS/test-dir && \
-        wget --header \'Authorization: token ${param_token}\' https://github.com/IOTechSystems/edgebuilder-node-components/tarball/master && \
-        tar -xf master && \
-        mv IOTech* edgebuilder-node-components && \
-        cd edgebuilder-node-components && \
-        docker-compose up -d\"'" \
+        apt install -y tasksel\"'" \
     ${PROVISION_LOG}
-
