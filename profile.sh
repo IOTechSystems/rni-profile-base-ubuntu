@@ -27,7 +27,8 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         export DEBIAN_FRONTEND=noninteractive && \
         tasksel install ${ubuntu_bundles} && \
         mkdir /test-dir && \
-        cp -r http://${PROVISIONER}/files/node-components.deb /test-dir && \
+        cd /test-dir && \
+        wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         apt install -y ${ubuntu_packages} && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
