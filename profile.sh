@@ -27,7 +27,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         export DEBIAN_FRONTEND=noninteractive && \
         tasksel install ${ubuntu_bundles} && \
         mkdir /test-dir && \
-        cp -r http://${PROVISIONER}${param_httppath}/files/node-components.deb /test-dir && \
+        cp -r http://${PROVISIONER}/files/node-components.deb /test-dir && \
         apt install -y ${ubuntu_packages} && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
