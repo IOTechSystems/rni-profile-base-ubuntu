@@ -10,7 +10,8 @@ source /opt/bootstrap/functions
 
 # --- Add Packages
 ubuntu_bundles="openssh-server"
-ubuntu_packages="wget dpkg"
+ubuntu_packages="wget dpkg zip"
+controller_address="192.168.0.40"
 
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
@@ -27,10 +28,25 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         export DEBIAN_FRONTEND=noninteractive && \
         tasksel install ${ubuntu_bundles} && \
         apt install -y ${ubuntu_packages} && \
-        mkdir /test-dir && \
-        cd /test-dir && \
+        mkdir /node-components && \
+        cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
-        edgebuilder-node up && \
+        curl -X POST -H 'Content-type: application/json' -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' http://${controller_address}:8080/api/auth | jq -r '.jwt' > jwt.txt && \
+        curl --location --request POST http://${controller_address}:8080/api/nodes \
+             --header 'Authorization: $(cat jwt.txt)' \
+             --header 'Content-Type: application/json' \
+             --data-raw '[
+                   {
+                       \"Name\": \"Test vNode\",
+                       \"Description\": \"I am test node\"
+                   }
+                         ]' > keys.json && \
+        mkdir keys && \
+        export MINIONID=$(jq -r '.Results[].ID' keys.json) && \
+        jq -r .Results[].MinionPrivateKey keys.json > keys/minion.pem && \
+        jq -r .Results[].MinionPublicKey keys.json > keys/minion.pub && \
+        tar -czvf keys.tar keys && \
+        edgebuilder-node up -s ${controller_address} -k /node-components/keys.tar -n Node1 && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
