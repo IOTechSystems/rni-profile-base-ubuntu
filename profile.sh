@@ -32,16 +32,16 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
-        curl -X POST -H 'Content-type: application/json' -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' http://${controller_address}:8080/api/auth | jq -r '.jwt' > jwt.txt && \
+        curl -X POST -H \'Content-type: application/json\' -d \'{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}\' http://${controller_address}:8080/api/auth | jq -r \'.jwt\' > jwt.txt && \
         curl --location --request POST http://${controller_address}:8080/api/nodes \
-             --header 'Authorization: $(cat jwt.txt)' \
-             --header 'Content-Type: application/json' \
-             --data-raw '[
+             --header \'Authorization: $(cat jwt.txt)\' \
+             --header \'Content-Type: application/json\' \
+             --data-raw \'[
                    {
                        \"Name\": \"Test vNode\",
                        \"Description\": \"I am test node\"
                    }
-                         ]' > keys.json && \
+                         ]\' > keys.json && \
         mkdir keys && \
         export MINIONID=$(jq -r '.Results[].ID' keys.json) && \
         jq -r .Results[].MinionPrivateKey keys.json > keys/minion.pem && \
