@@ -10,7 +10,7 @@ source /opt/bootstrap/functions
 
 # --- Add Packages
 ubuntu_bundles="openssh-server"
-ubuntu_packages="wget"
+ubuntu_packages="wget dpkg"
 
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
@@ -26,9 +26,11 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         \"$(echo ${INLINE_PROXY} | sed "s#'#\\\\\"#g") export TERM=xterm-color && \
         export DEBIAN_FRONTEND=noninteractive && \
         tasksel install ${ubuntu_bundles} && \
+        apt install -y ${ubuntu_packages} && \
         mkdir /test-dir && \
         cd /test-dir && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
-        apt install -y ${ubuntu_packages} && \
+        dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
+        edgebuilder-node up && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
