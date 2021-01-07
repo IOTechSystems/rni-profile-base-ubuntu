@@ -15,13 +15,6 @@ ubuntu_packages="wget"
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
 
-# --- Get kernel parameters ---
-kernel_params=$(cat /proc/cmdline)
-
-if [[ $kernel_params == *"token="* ]]; then
-    tmp="${kernel_params##*token=}"
-    export param_token="${tmp%% *}"
-fi
 
 # --- Install Extra Packages ---
 run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
@@ -33,13 +26,8 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         \"$(echo ${INLINE_PROXY} | sed "s#'#\\\\\"#g") export TERM=xterm-color && \
         export DEBIAN_FRONTEND=noninteractive && \
         tasksel install ${ubuntu_bundles} && \
+        mkdir /test-dir && \
+        cp -r http://${PROVISIONER}${param_httppath}/files/node-components.deb /test-dir && \
         apt install -y ${ubuntu_packages} && \
-        mkdir -p $ROOTFS/test-dir && \
-        cd $ROOTFS/test-dir && \
-        wget https://github.com/IOTechSystems/edgebuilder-node-components/tarball/master && \
-        tar -xf master && \
-        mv IOTech* edgebuilder-node-components && \
-        cd edgebuilder-node-components && \
-        docker-compose up -d && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}

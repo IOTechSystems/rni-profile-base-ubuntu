@@ -1,3 +1,8 @@
 ---
 
 ## Files to download will go here
+
+general_files:
+  - url: https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb
+    destination_file: node-components.deb
+    token: None
