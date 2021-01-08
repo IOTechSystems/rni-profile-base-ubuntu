@@ -36,6 +36,6 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
-        curl -ski -X GET \"http://192.168.0.40:8080/api/nodes\" -H \"Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFeHBpcmVzQXQiOjE2MTAyMDQ0NzQsIlBhc3N3b3JkIjoiRWRnZUJ1aWxkZXIxMjMiLCJVc2VybmFtZSI6ImlvdGVjaCJ9.NoVLVLFAsbqxln8KHgSG4-xgaoC2OCT9ByxyLGrVYMg\" && \
+        curl -ski -X POST \"http://192.168.0.40:8080/api/nodes\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d '{\"Username\": \"iotech\",  \"Password\": \"EdgeBuilder123\"}' | jq -r '.jwt' > jwt.txt && \   && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
