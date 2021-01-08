@@ -31,7 +31,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         export DEBIAN_FRONTEND=noninteractive && \
         tasksel install ${ubuntu_bundles} && \
         apt install -y ${ubuntu_packages} && \
-        mkdir /node-components
+        mkdir /node-components && \
         cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
