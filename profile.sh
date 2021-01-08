@@ -20,13 +20,7 @@ controller_password="EdgeBuilder123"
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
 
-# --- Get JWT Token ---
-run "Get JWT Token" \
-    "mkdir -p $ROOTFS/node-components && \
-    cd $ROOTFS/node-components && \
-    apt install -y ${ubuntu_packages} && \
-    curl -ski -X POST \"http://192.168.0.40:8080/api/auth\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' | jq -r '.jwt' > jwt.txt" \
-    "$TMP/provisioning.log"
+
 
 # --- Install Extra Packages ---
 run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
@@ -39,6 +33,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         export DEBIAN_FRONTEND=noninteractive && \
         tasksel install ${ubuntu_bundles} && \
         apt install -y ${ubuntu_packages} && \
+        mkdir /node-components && \
         cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
