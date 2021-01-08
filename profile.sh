@@ -31,8 +31,8 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         export DEBIAN_FRONTEND=noninteractive && \
         tasksel install ${ubuntu_bundles} && \
         apt install -y ${ubuntu_packages} && \
-        mkdir /node-components
-        cd /node-components && \
+        mkdir $ROOTFS/node-components
+        cd $ROOTFS/node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
         apt install -y tasksel\"'" \
@@ -40,5 +40,6 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
 
 # --- Get JWT Token ---
 run "Get JWT Token" \
-    "curl -ski -X POST \"http://192.168.0.40:8080/api/auth\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' | jq -r '.jwt' > $ROOTFS/node-components/jwt.txt" \
+    "cd $ROOTFS/node-components && \
+    curl -ski -X POST \"http://192.168.0.40:8080/api/auth\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' | jq -r '.jwt' > jwt.txt" \
     "$TMP/provisioning.log"
