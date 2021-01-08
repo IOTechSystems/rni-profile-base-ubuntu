@@ -12,6 +12,10 @@ source /opt/bootstrap/functions
 ubuntu_bundles="openssh-server"
 ubuntu_packages="wget dpkg zip"
 controller_address="192.168.0.40"
+username_arg="Username"
+password_arg="Password"
+controller_username="iotech"
+controller_password="EdgeBuilder123"
 
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
@@ -32,6 +36,6 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
-        curl -X POST -H 'Content-type: application/json' -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' http://192.168.0.40:8080/api/auth | jq -r '.jwt' > jwt.txt && \
+        curl -X POST -H 'Content-type: application/json' -d '{${username_arg}: ${controller_username}, ${password_arg}: ${controller_password}}' http://${controller_address}:8080/api/auth | jq -r '.jwt' > jwt.txt && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
