@@ -24,6 +24,7 @@ wget_sysdockerimagelist=""
 run "Get JWT Token" \
     "mkdir -p $ROOTFS/node-components && \
     cd $ROOTFS/node-components && \
+    apt install -y ${ubuntu_packages} && \
     curl -ski -X POST \"http://192.168.0.40:8080/api/auth\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' | jq -r '.jwt' > jwt.txt" \
     "$TMP/provisioning.log"
 
