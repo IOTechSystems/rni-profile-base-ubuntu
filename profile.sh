@@ -20,6 +20,11 @@ controller_password="EdgeBuilder123"
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
 
+# --- Install Utility OS Packages ---
+run "Install Utility OS packages" \
+    "apk add jq curl" \
+    "$TMP/provisioning.log"
+
 # --- Install Extra Packages ---
 run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
     "docker run -i --rm --privileged --name ubuntu-installer ${DOCKER_PROXY_ENV} -v /dev:/dev -v /sys/:/sys/ -v $ROOTFS:/target/root ubuntu:${param_ubuntuversion} sh -c \
