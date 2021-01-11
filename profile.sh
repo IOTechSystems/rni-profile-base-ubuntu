@@ -44,6 +44,18 @@ run "Get minion keys" \
     tar -czvf $ROOTFS/controller/keys.tar $ROOTFS/controller/keys" \
     "$TMP/provisioning.log"
 
+# --- Create systemd file ---
+run "Create systemd file" \
+    "echo -e \"[Unit]\nAfter=network.service\n\n[Service]\nExecStart=/controller/node-components-up.sh\n\n[Install]\nWantedBy=default.target\" >> $ROOTFS/etc/systemd/system/node-components-up.service && \
+    chmod 664 $ROOTFS/etc/systemd/system/node-components-up.service" \
+    "$TMP/provisioning.log"
+
+# --- Create node components up file ---
+run "Create node components up script" \
+    "echo -e \"#!/bin/bash\n\nedgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node-name}\" >> $ROOTFS/controller/node-components-up.sh && \
+    chmod 744 $ROOTFS/controller/node-components-up.sh" \
+    "$TMP/provisioning.log"
+
 # --- Install Extra Packages ---
 run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
     "docker run -i --rm --privileged --name ubuntu-installer ${DOCKER_PROXY_ENV} -v /dev:/dev -v /sys/:/sys/ -v $ROOTFS:/target/root ubuntu:${param_ubuntuversion} sh -c \
@@ -59,10 +71,11 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
-        service docker start && \
-        edgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name} && \
+        systemctl daemon-reload && \
+        systemctl enable node-components-up.service && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
+
 
 
 
