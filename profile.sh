@@ -10,7 +10,7 @@ source /opt/bootstrap/functions
 
 # --- Add Packages
 ubuntu_bundles="openssh-server"
-ubuntu_packages="wget dpkg zip"
+ubuntu_packages="wget dpkg"
 
 # --- Controller authentication
 controller_address="192.168.0.40"
@@ -59,6 +59,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
+        service docker start && \
         edgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name} && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
