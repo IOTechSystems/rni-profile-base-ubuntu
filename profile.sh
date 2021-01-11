@@ -22,7 +22,7 @@ wget_sysdockerimagelist=""
 
 # --- Install Utility OS Packages ---
 run "Install Utility OS packages" \
-    "apk add jq curl" \
+    "apk add jq curl tar" \
     "$TMP/provisioning.log"
 
 # --- Install Extra Packages ---
@@ -48,3 +48,13 @@ run "Get JWT Token" \
     "mkdir -p $ROOTFS/controller && \
     curl -sk -X POST \"http://192.168.0.40:8080/api/auth\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' | jq -r '.jwt' > $ROOTFS/controller/jwt.txt" \
     "$TMP/provisioning.log"
+
+# -- Get Minion Keys ---
+run "Get minion keys" \
+    "curl -ski -X POST \"http://192.168.0.40:8080/api/nodes\" -H \"Accept: application/json\" -H \"Authorization: $(cat $ROOTFS/controller/jwt.txt)\" -d '[{\"Name\": \"Node1\", \"Description\": \"This is node1\"}]' > $ROOTFS/controller/keys.json && \
+    mkdir -p $ROOTFS/controller/keys && \
+    jq -r .Results[].MinionPrivateKey keys.json > $ROOTFS/controller/keys/minion.pem && \
+    jq -r .Results[].MinionPublicKey keys.json > $ROOTFS/controller/keys/minion.pub && \
+    tar -czvf $ROOTFS/controller/keys.tar $ROOTFS/controller/keys" \
+    "$TMP/provisioning.log"
+
