@@ -51,7 +51,7 @@ run "Get JWT Token" \
 
 # -- Get Minion Keys ---
 run "Get minion keys" \
-    "curl -ski -X POST \"http://192.168.0.40:8080/api/nodes\" -H \"Accept: application/json\" -H \"Authorization: $(cat $ROOTFS/controller/jwt.txt)\" -d '[{\"Name\": \"Node1\", \"Description\": \"This is node1\"}]' > $ROOTFS/controller/keys.json && \
+    "curl -sk -X POST \"http://192.168.0.40:8080/api/nodes\" -H \"Accept: application/json\" -H \"Authorization: $(cat $ROOTFS/controller/jwt.txt)\" -d '[{\"Name\": \"Node1\", \"Description\": \"This is node1\"}]' > $ROOTFS/controller/keys.json && \
     mkdir -p $ROOTFS/controller/keys && \
     jq -r .Results[].MinionPrivateKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pem && \
     jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub && \
