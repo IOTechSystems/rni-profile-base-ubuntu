@@ -29,24 +29,6 @@ run "Install Utility OS packages" \
     "apk add jq curl tar" \
     "$TMP/provisioning.log"
 
-# --- Install Extra Packages ---
-run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
-    "docker run -i --rm --privileged --name ubuntu-installer ${DOCKER_PROXY_ENV} -v /dev:/dev -v /sys/:/sys/ -v $ROOTFS:/target/root ubuntu:${param_ubuntuversion} sh -c \
-    'mount --bind dev /target/root/dev && \
-    mount -t proc proc /target/root/proc && \
-    mount -t sysfs sysfs /target/root/sys && \
-    LANG=C.UTF-8 chroot /target/root sh -c \
-        \"$(echo ${INLINE_PROXY} | sed "s#'#\\\\\"#g") export TERM=xterm-color && \
-        export DEBIAN_FRONTEND=noninteractive && \
-        tasksel install ${ubuntu_bundles} && \
-        apt install -y ${ubuntu_packages} && \
-        mkdir /node-components && \
-        cd /node-components && \
-        wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
-        dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
-        apt install -y tasksel\"'" \
-    ${PROVISION_LOG}
-
 # --- Get JWT Token ---
 run "Get JWT Token" \
     "mkdir -p $ROOTFS/controller && \
@@ -62,8 +44,24 @@ run "Get minion keys" \
     tar -czvf $ROOTFS/controller/keys.tar $ROOTFS/controller/keys" \
     "$TMP/provisioning.log"
 
-# --- Launch node components ---
-run "Launch node components" \
-    "edgebuilder-node up -s ${controller_address} -k $ROOTFS/controller/keys.tar -n ${node_name}" \
-    "$TMP/provisioning.log"
+# --- Install Extra Packages ---
+run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
+    "docker run -i --rm --privileged --name ubuntu-installer ${DOCKER_PROXY_ENV} -v /dev:/dev -v /sys/:/sys/ -v $ROOTFS:/target/root ubuntu:${param_ubuntuversion} sh -c \
+    'mount --bind dev /target/root/dev && \
+    mount -t proc proc /target/root/proc && \
+    mount -t sysfs sysfs /target/root/sys && \
+    LANG=C.UTF-8 chroot /target/root sh -c \
+        \"$(echo ${INLINE_PROXY} | sed "s#'#\\\\\"#g") export TERM=xterm-color && \
+        export DEBIAN_FRONTEND=noninteractive && \
+        tasksel install ${ubuntu_bundles} && \
+        apt install -y ${ubuntu_packages} && \
+        mkdir /node-components && \
+        cd /node-components && \
+        wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
+        dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
+        edgebuilder-node up -s ${controller_address} -k $ROOTFS/controller/keys.tar -n ${node_name} && \
+        apt install -y tasksel\"'" \
+    ${PROVISION_LOG}
+
+
 
