@@ -46,13 +46,13 @@ run "Get minion keys" \
 
 # --- Create systemd file ---
 run "Create systemd file" \
-    "echo -e \"[Unit]\nAfter=network.service\n\n[Service]\nExecStart=/controller/node-components-up.sh\n\n[Install]\nWantedBy=default.target\" >> $ROOTFS/etc/systemd/system/node-components-up.service && \
+    "echo -e \"[Unit]\nAfter=docker.service\n\n[Service]\nExecStart=/controller/node-components-up.sh\n\n[Install]\nWantedBy=default.target\" >> $ROOTFS/etc/systemd/system/node-components-up.service && \
     chmod 664 $ROOTFS/etc/systemd/system/node-components-up.service" \
     "$TMP/provisioning.log"
 
 # --- Create node components up file ---
 run "Create node components up script" \
-    "echo -e \"#!/bin/bash\n\nedgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node-name}\" >> $ROOTFS/controller/node-components-up.sh && \
+    "echo -e \"#!/bin/bash\n\ncd /controller\nedgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name}\" >> $ROOTFS/controller/node-components-up.sh && \
     chmod 744 $ROOTFS/controller/node-components-up.sh" \
     "$TMP/provisioning.log"
 
