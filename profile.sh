@@ -59,7 +59,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         cd /node-components && \
         wget https://iotech.jfrog.io/artifactory/public/edgebuilder-node-1.0.0_amd64.deb && \
         dpkg -i edgebuilder-node-1.0.0_amd64.deb && \
-        edgebuilder-node up -s ${controller_address} -k $ROOTFS/controller/keys.tar -n ${node_name} && \
+        edgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name} && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
 
