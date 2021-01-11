@@ -11,9 +11,15 @@ source /opt/bootstrap/functions
 # --- Add Packages
 ubuntu_bundles="openssh-server"
 ubuntu_packages="wget dpkg zip"
+
+# --- Controller authentication
 controller_address="192.168.0.40"
 controller_username="iotech"
 controller_password="EdgeBuilder123"
+
+# --- Node details
+node_name="Node4"
+node_description="This is ${node_name}"
 
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
 wget_sysdockerimagelist=""
@@ -49,10 +55,15 @@ run "Get JWT Token" \
 
 # -- Get Minion Keys ---
 run "Get minion keys" \
-    "curl -sk -X POST \"http://${controller_address}:8080/api/nodes\" -H \"Accept: application/json\" -H \"Authorization: $(cat $ROOTFS/controller/jwt.txt)\" -d '[{\"Name\": \"Node3\", \"Description\": \"This is node1\"}]' > $ROOTFS/controller/keys.json && \
+    "curl -sk -X POST \"http://${controller_address}:8080/api/nodes\" -H \"Accept: application/json\" -H \"Authorization: $(cat $ROOTFS/controller/jwt.txt)\" -d '[{\"Name\": \"${node_name}\", \"Description\": \"${node_description}\"}]' > $ROOTFS/controller/keys.json && \
     mkdir -p $ROOTFS/controller/keys && \
     jq -r .Results[].MinionPrivateKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pem && \
     jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub && \
     tar -czvf $ROOTFS/controller/keys.tar $ROOTFS/controller/keys" \
+    "$TMP/provisioning.log"
+
+# --- Launch node components ---
+run "Launch node components" \
+    "edgebuilder-node up -s ${controller_address} -k $ROOTFS/controller/keys.tar -n ${node_name}" \
     "$TMP/provisioning.log"
 
