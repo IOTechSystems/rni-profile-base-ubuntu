@@ -12,8 +12,6 @@ source /opt/bootstrap/functions
 ubuntu_bundles="openssh-server"
 ubuntu_packages="wget dpkg zip"
 controller_address="192.168.0.40"
-username_arg="Username"
-password_arg="Password"
 controller_username="iotech"
 controller_password="EdgeBuilder123"
 
@@ -46,12 +44,12 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
 # --- Get JWT Token ---
 run "Get JWT Token" \
     "mkdir -p $ROOTFS/controller && \
-    curl -sk -X POST \"http://192.168.0.40:8080/api/auth\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d '{\"Username\": \"iotech\", \"Password\": \"EdgeBuilder123\"}' | jq -r '.jwt' > $ROOTFS/controller/jwt.txt" \
+    curl -sk -X POST \"http://${controller_address}:8080/api/auth\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d '{\"Username\": \"${controller_username}\", \"Password\": \"${controller_password}\"}' | jq -r '.jwt' > $ROOTFS/controller/jwt.txt" \
     "$TMP/provisioning.log"
 
 # -- Get Minion Keys ---
 run "Get minion keys" \
-    "curl -sk -X POST \"http://192.168.0.40:8080/api/nodes\" -H \"Accept: application/json\" -H \"Authorization: $(cat $ROOTFS/controller/jwt.txt)\" -d '[{\"Name\": \"Node1\", \"Description\": \"This is node1\"}]' > $ROOTFS/controller/keys.json && \
+    "curl -sk -X POST \"http://${controller_address}:8080/api/nodes\" -H \"Accept: application/json\" -H \"Authorization: $(cat $ROOTFS/controller/jwt.txt)\" -d '[{\"Name\": \"Node3\", \"Description\": \"This is node1\"}]' > $ROOTFS/controller/keys.json && \
     mkdir -p $ROOTFS/controller/keys && \
     jq -r .Results[].MinionPrivateKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pem && \
     jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub && \
