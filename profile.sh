@@ -53,7 +53,7 @@ run "Create systemd file" \
 # --- Create node components up file ---
 run "Create node components up script" \
     "echo -e \"#!/bin/bash\n\ncd /controller\nedgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name}\" >> $ROOTFS/usr/local/bin/node-components-up.sh && \
-    chmod 744 $ROOTFS/controller/node-components-up.sh" \
+    chmod 744 $ROOTFS/usr/local/bin/node-components-up.sh" \
     "$TMP/provisioning.log"
 
 # --- Install Extra Packages ---
