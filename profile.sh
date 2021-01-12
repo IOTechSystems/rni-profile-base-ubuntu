@@ -41,6 +41,7 @@ run "Get minion keys" \
     mkdir -p $ROOTFS/controller/keys && \
     jq -r .Results[].MinionPrivateKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pem && \
     jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub && \
+    jq -r .Results[].ID $ROOTFS/controller/keys.json > $ROOTFS/controller/minion-id.txt && \
     tar -czvf $ROOTFS/controller/keys.tar $ROOTFS/controller/keys" \
     "$TMP/provisioning.log"
 
@@ -52,7 +53,7 @@ run "Create systemd file" \
 
 # --- Create node components up file ---
 run "Create node components up script" \
-    "echo -e \"#!/bin/bash\n\ncd /controller\nedgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name}\" >> $ROOTFS/usr/local/bin/node-components-up.sh && \
+    "echo -e \"#!/bin/bash\n\nexport SALT_MASTER_ADDR=${controller_address}\nexport MINIONID=$(cat $ROOTFS/controller/minion-id.txt)\nedgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name}\" >> $ROOTFS/usr/local/bin/node-components-up.sh && \
     chmod 744 $ROOTFS/usr/local/bin/node-components-up.sh" \
     "$TMP/provisioning.log"
 
