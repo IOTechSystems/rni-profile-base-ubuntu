@@ -40,8 +40,7 @@ run "Get minion keys" \
     "curl -sk -X POST \"http://${controller_address}:8080/api/nodes\" -H \"Accept: application/json\" -H \"Authorization: $(cat $ROOTFS/controller/jwt.txt)\" -d '[{\"Name\": \"${node_name}\", \"Description\": \"${node_description}\"}]' > $ROOTFS/controller/keys.json && \
     mkdir -p $ROOTFS/controller/keys && \
     jq -r .Results[].MinionPrivateKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pem && \
-    jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub && \
-    tar -czvf $ROOTFS/controller/$(jq -r .Results[].ID $ROOTFS/controller/keys.json).tar -C $ROOTFS/controller/keys minion.pub minion.pem" \
+    jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub" \
     "$TMP/provisioning.log"
 
 # --- Create systemd file ---
@@ -76,6 +75,7 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
 
-
-
+run "Create keys archive" \
+    "tar -czvf $ROOTFS/controller/$(jq -r .Results[].ID $ROOTFS/controller/keys.json).tar -C $ROOTFS/controller/keys minion.pub minion.pem" \
+    "$TMP/provisioning.log"
 
