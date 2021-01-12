@@ -53,7 +53,7 @@ run "Create systemd file" \
 
 # --- Create node components up file ---
 run "Create node components up script" \
-    "echo -e \"#!/bin/bash\n\nexport SALT_MASTER=${controller_address}\nexport MINIONID=$(cat $ROOTFS/controller/minion-id.txt)\nedgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name}\" >> $ROOTFS/usr/local/bin/node-components-up.sh && \
+    "echo -e \"#!/bin/bash\n\nexport EB_SERVER_ADDR=${controller_address}\nexport MINIONID=$(cat $ROOTFS/controller/minion-id.txt)\nexport NODE_NAME=${node_name}\nedgebuilder-node up -s ${controller_address} -k /controller/keys.tar -n ${node_name}\" >> $ROOTFS/usr/local/bin/node-components-up.sh && \
     chmod 744 $ROOTFS/usr/local/bin/node-components-up.sh" \
     "$TMP/provisioning.log"
 
