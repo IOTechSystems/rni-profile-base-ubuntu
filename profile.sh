@@ -18,7 +18,7 @@ controller_username="iotech"
 controller_password="EdgeBuilder123"
 
 # --- Node details
-node_name="Node4"
+node_name="Node1"
 node_description="This is ${node_name}"
 
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
