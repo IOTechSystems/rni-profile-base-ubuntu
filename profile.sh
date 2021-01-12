@@ -42,7 +42,6 @@ run "Get minion keys" \
     jq -r .Results[].MinionPrivateKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pem && \
     jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub && \
     jq -r .Results[].ID $ROOTFS/controller/keys.json > $ROOTFS/controller/minion-id.txt && \
-    cd $ROOTFS/controller/keys && \
     tar -czvf $ROOTFS/controller/$(cat $ROOTFS/controller/minion-id.txt).tar -C $ROOTFS/controller/keys minion.pub minion.pem" \
     "$TMP/provisioning.log"
 
