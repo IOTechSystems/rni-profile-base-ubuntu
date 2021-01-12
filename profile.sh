@@ -41,8 +41,7 @@ run "Get minion keys" \
     mkdir -p $ROOTFS/controller/keys && \
     jq -r .Results[].MinionPrivateKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pem && \
     jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub && \
-    jq -r .Results[].ID $ROOTFS/controller/keys.json > $ROOTFS/controller/minion-id.txt && \
-    tar -czvf $ROOTFS/controller/$(cat $ROOTFS/controller/minion-id.txt).tar -C $ROOTFS/controller/keys minion.pub minion.pem" \
+    tar -czvf $ROOTFS/controller/$(jq -r .Results[].ID $ROOTFS/controller/keys.json).tar -C $ROOTFS/controller/keys minion.pub minion.pem" \
     "$TMP/provisioning.log"
 
 # --- Create systemd file ---
