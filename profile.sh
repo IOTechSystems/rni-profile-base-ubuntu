@@ -49,11 +49,6 @@ run "Create systemd file" \
     chmod 664 $ROOTFS/etc/systemd/system/node-components-up.service" \
     "$TMP/provisioning.log"
 
-# --- Create node components up file ---
-run "Create node components up script" \
-    "echo -e \"#!/bin/bash\n\nedgebuilder-node up -s ${controller_address} -k /controller/$(cat $ROOTFS/controller/minion-id.txt).tar -n ${node_name}\" >> $ROOTFS/usr/local/bin/node-components-up.sh && \
-    chmod 744 $ROOTFS/usr/local/bin/node-components-up.sh" \
-    "$TMP/provisioning.log"
 
 # --- Install Extra Packages ---
 run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
@@ -74,6 +69,12 @@ run "Installing Extra Packages on Ubuntu ${param_ubuntuversion}" \
         systemctl enable node-components-up.service && \
         apt install -y tasksel\"'" \
     ${PROVISION_LOG}
+
+# --- Create node components up file ---
+run "Create node components up script" \
+    "echo -e \"#!/bin/bash\n\nedgebuilder-node up -s ${controller_address} -k /controller/$(jq -r .Results[].ID $ROOTFS/controller/keys.json).tar -n ${node_name}\" >> $ROOTFS/usr/local/bin/node-components-up.sh && \
+    chmod 744 $ROOTFS/usr/local/bin/node-components-up.sh" \
+    "$TMP/provisioning.log"
 
 run "Create keys archive" \
     "tar -czvf $ROOTFS/controller/$(jq -r .Results[].ID $ROOTFS/controller/keys.json).tar -C $ROOTFS/controller/keys minion.pub minion.pem" \
