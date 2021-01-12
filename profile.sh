@@ -43,7 +43,7 @@ run "Get minion keys" \
     jq -r .Results[].MinionPublicKey $ROOTFS/controller/keys.json > $ROOTFS/controller/keys/minion.pub && \
     jq -r .Results[].ID $ROOTFS/controller/keys.json > $ROOTFS/controller/minion-id.txt && \
     cd $ROOTFS/controller/keys && \
-    tar -czvf $ROOTFS/controller/keys.tar minion.pub minion.pem" \
+    tar -czvf $ROOTFS/controller/$(cat $ROOTFS/controller/minion-id.txt).tar minion.pub minion.pem" \
     "$TMP/provisioning.log"
 
 # --- Create systemd file ---
