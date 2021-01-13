@@ -13,12 +13,12 @@ ubuntu_bundles="openssh-server"
 ubuntu_packages="wget dpkg"
 
 # --- Controller authentication
-controller_address="192.168.0.40"
+controller_address="192.168.2.215"
 controller_username="iotech"
 controller_password="EdgeBuilder123"
 
 # --- Node details
-node_name="Node2"
+node_name="node3"
 node_description="This is ${node_name}"
 
 # --- List out any docker tar images you want pre-installed separated by spaces.  We be pulled by wget. ---
@@ -79,4 +79,3 @@ run "Create node components up script" \
 run "Create keys archive" \
     "tar -czvf $ROOTFS/controller/$(jq -r .Results[].ID $ROOTFS/controller/keys.json).tar -C $ROOTFS/controller/keys minion.pub minion.pem" \
     "$TMP/provisioning.log"
-
